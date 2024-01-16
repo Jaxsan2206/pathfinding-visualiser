@@ -1,0 +1,24 @@
+
+
+.node {
+    width: 20px;
+    height: 20px;
+    border: 1px black solid;
+}
+
+.node-start {
+    background-color: green;
+}
+
+.node-visited {
+    background-color: blue;
+}
+
+
+.node-end {
+    background-color: red;
+}
+
+.node-shortest-path {
+    background-color: yellow;
+}
