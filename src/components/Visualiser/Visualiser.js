@@ -1,18 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Node from '../Node/Node'
 import './Visualiser.css';
 import { connect } from 'react-redux';
 import { createGrid } from '../../helpers/createGrid';
 import { dijkstra } from '../../algorithms/dijkstra';
+import { generateGrid } from '../../reducers/grid';
 
-const Visualiser = ({ animate }) => {
-
-  const grid = createGrid(15, 50)
+const Visualiser = ({ animate, generateGrid, grid }) => {
 
   const handleClick = () => {
-    animate(grid, 'djikstra')
+    animate('djikstra')
   }
 
+  useEffect(() => {
+    generateGrid()
+  }, [])
+  
   return (
     <div>
       {grid?.map((row, idx) => {
@@ -22,6 +25,7 @@ const Visualiser = ({ animate }) => {
               <Node
                 col={node.col}
                 row={node.row}
+                isVisited ={node.isVisited}
                 key={`node-${node.row}-${node.col}`}
               ></Node>
             ))}
@@ -36,6 +40,7 @@ const Visualiser = ({ animate }) => {
 
 const mapStateToProps = state => {
   return {
+    grid: state.grid.grid,
     startCoords: state.grid.startNode,
     endCoords: state.grid.endNode,
   }
@@ -43,21 +48,28 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    //  We don't need this here cos it isn't changing state
     animate: (grid, startNode, endNode, algorithm) => {
-      const startNodeSnapshot = grid[startNode.row][startNode.col];
-      const endNodeSnapshot = grid[endNode.row][endNode.col];
+      const gridSnapshot = JSON.parse(JSON.stringify(grid));
+      const startNodeSnapshot = gridSnapshot[startNode.row][startNode.col];
+      const endNodeSnapshot = gridSnapshot[endNode.row][endNode.col];
       const selectedAlgorithm = algorithm === "djikstra" ? dijkstra : null;
-      selectedAlgorithm(grid, startNodeSnapshot, endNodeSnapshot, dispatch);
+      selectedAlgorithm(gridSnapshot, startNodeSnapshot, endNodeSnapshot, dispatch);
     },
+    generateGrid: () => {
+      const grid = createGrid(15, 50)
+      dispatch(generateGrid(grid))
+    }
   };
 }
 
 const mergeProps = (state, dispatchProps, ownProps) => {
-  const { startCoords, endCoords } = state
+  const { grid, startCoords, endCoords } = state
+  const { animate, ...rest } = dispatchProps
   return {
-    animate: (grid, algorithm) => dispatchProps.animate(grid, startCoords, endCoords, algorithm),
-    ...ownProps
+    animate: (algorithm) => dispatchProps.animate(grid, startCoords, endCoords, algorithm),
+    ...rest,
+    ...ownProps,
+    ...state
   };
 }
 

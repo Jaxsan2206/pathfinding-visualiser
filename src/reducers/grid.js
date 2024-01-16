@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const gridSlice = createSlice({
   name: 'grid',
   initialState: {
+    grid: [],
     startNode: {
       row: 7,
       col: 6
@@ -14,21 +15,29 @@ export const gridSlice = createSlice({
     wallNodes: []
   },
   reducers: {
+    generateGrid: (state, { payload }) => {
+      state.grid = payload
+    },
     updateStartNode: (state, { payload }) => {
       const [ row, col ] = payload
-      state.startNode.row = row
-      state.startNode.col = col
+      state.startNode.row = row;
+      state.startNode.col = col;
     },
     updateEndNode: (state, { payload }) => {
       const [ row, col ] = payload
       state.endNode.row = row
       state.endNode.col = col
     },
-    
+    updateVisited: (state, { payload }) => {
+      const { row, col } = payload;
+      const node = state.grid[row][col]
+      const newNode = { ...node, isVisited: true };
+      state.grid[row][col] = newNode
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { updateStartNode, updateEndNode } = gridSlice.actions
+export const { updateStartNode, updateEndNode, generateGrid, updateVisited } = gridSlice.actions
 
 export default gridSlice.reducer

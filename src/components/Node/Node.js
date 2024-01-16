@@ -20,7 +20,7 @@ const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMou
 
 const mapStateToProps = state => {
   return {
-    visited: state.visited.value,
+    // visited: state.visited.value,
     shortestPath: state.shortestPath.value,
     startCoords: state.grid.startNode,
     endCoords: state.grid.endNode,
@@ -59,8 +59,8 @@ const mapDispatchToProps = dispatch => {
 
 
 const mergeProps = (state, dispatchProps, ownProps ) => {
-  const { row, col } = ownProps
-  const { visited, shortestPath, startCoords, endCoords, isStartPressed, isEndPressed } = state
+  const { row, col, isVisited } = ownProps
+  const { shortestPath, startCoords, endCoords, isStartPressed, isEndPressed } = state
   const { handleMouseDown, handleMouseEnter, ...rest } = dispatchProps
 
   const nodeType = shortestPath?.some((node) => node.col === col && node.row === row)
@@ -69,7 +69,7 @@ const mergeProps = (state, dispatchProps, ownProps ) => {
     ? "node-start"
     : col === endCoords.col && row === endCoords.row
     ? "node-end"
-    : visited?.some((node) => node.col === col && node.row === row)
+    : isVisited
     ? "node-visited"
     : "";
 

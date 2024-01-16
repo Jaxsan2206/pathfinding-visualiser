@@ -8,7 +8,7 @@ export const createGrid = (rows, cols) => {
             row: i,
             distance: Infinity,
             isVisited: false,
-            previousNode: null
+            previousNode: null,
           })
       }
       grid.push(currentRow)
