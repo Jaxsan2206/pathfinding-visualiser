@@ -5,16 +5,16 @@ import { connect } from 'react-redux';
 import { createGrid } from '../../helpers/createGrid';
 import { dijkstra } from '../../algorithms/dijkstra';
 import { generateGrid } from '../../reducers/grid';
+import { deepClone } from '../../helpers/deepClone';
 
-const Visualiser = ({ animate, generateGrid, grid }) => {
-
+const Visualiser = ({ animate, generateGrid, grid, startCoords, endCoords  }) => {
   const handleClick = () => {
     animate('djikstra')
   }
 
   useEffect(() => {
     generateGrid()
-  }, [])
+  }, [generateGrid])
   
   return (
     <div>
@@ -26,8 +26,11 @@ const Visualiser = ({ animate, generateGrid, grid }) => {
                 col={node.col}
                 row={node.row}
                 isVisited ={node.isVisited}
+                isStart={node.col === startCoords.col && node.row === startCoords.row}
+                isEnd={node.col === endCoords.col && node.row === endCoords.row}
+                isShortestPathNode={node.isShortestPathNode}
                 key={`node-${node.row}-${node.col}`}
-              ></Node>
+              />
             ))}
           </div>
         );
@@ -49,8 +52,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     animate: (grid, startNode, endNode, algorithm) => {
-      const gridSnapshot = JSON.parse(JSON.stringify(grid));
-      const startNodeSnapshot = gridSnapshot[startNode.row][startNode.col];
+      const gridSnapshot = deepClone(grid)
+      const startNodeSnapshot =gridSnapshot[startNode.row][startNode.col];
       const endNodeSnapshot = gridSnapshot[endNode.row][endNode.col];
       const selectedAlgorithm = algorithm === "djikstra" ? dijkstra : null;
       selectedAlgorithm(gridSnapshot, startNodeSnapshot, endNodeSnapshot, dispatch);

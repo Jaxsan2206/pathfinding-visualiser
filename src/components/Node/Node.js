@@ -6,7 +6,6 @@ import { updateEndNode, updateStartNode } from '../../reducers/grid';
 
 const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMouseUp }) => {
   const nodeClasses = `node ${nodeType}`;
-
   return (
     <div
       className={nodeClasses}
@@ -20,10 +19,6 @@ const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMou
 
 const mapStateToProps = state => {
   return {
-    // visited: state.visited.value,
-    shortestPath: state.shortestPath.value,
-    startCoords: state.grid.startNode,
-    endCoords: state.grid.endNode,
     isStartPressed: state.mouseEvent.isStartPressed,
     isEndPressed: state.mouseEvent.isEndPressed
   }
@@ -59,15 +54,15 @@ const mapDispatchToProps = dispatch => {
 
 
 const mergeProps = (state, dispatchProps, ownProps ) => {
-  const { row, col, isVisited } = ownProps
-  const { shortestPath, startCoords, endCoords, isStartPressed, isEndPressed } = state
+  const { isStart, isEnd, isVisited, isShortestPathNode } = ownProps
+  const { isStartPressed, isEndPressed } = state
   const { handleMouseDown, handleMouseEnter, ...rest } = dispatchProps
 
-  const nodeType = shortestPath?.some((node) => node.col === col && node.row === row)
+  const nodeType = isShortestPathNode
     ? "node-shortest-path"
-    : col === startCoords.col && row === startCoords.row
+    : isStart
     ? "node-start"
-    : col === endCoords.col && row === endCoords.row
+    : isEnd
     ? "node-end"
     : isVisited
     ? "node-visited"

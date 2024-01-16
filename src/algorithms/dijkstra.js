@@ -1,5 +1,4 @@
-import { updateShortestPath } from "../reducers/shortestPath";
-import { updateVisited } from "../reducers/grid";
+import { updateVisited, updateShortestPath } from "../reducers/grid";
 
 export const dijkstra = (grid, startNode, finishNode, dispatch) => {
   const visitedNodesInOrder = [];
