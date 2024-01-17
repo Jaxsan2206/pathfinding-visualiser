@@ -26,6 +26,7 @@ const Visualiser = ({ animate, generateGrid, grid, startCoords, endCoords  }) =>
                 col={node.col}
                 row={node.row}
                 isVisited ={node.isVisited}
+                isWall ={node.isWall}
                 isStart={node.col === startCoords.col && node.row === startCoords.row}
                 isEnd={node.col === endCoords.col && node.row === endCoords.row}
                 isShortestPathNode={node.isShortestPathNode}

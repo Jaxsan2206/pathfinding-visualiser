@@ -1,8 +1,8 @@
 import React from 'react'
 import './Node.css';
 import { connect } from 'react-redux';
-import { updateEndPress, updateStartPress } from '../../reducers/mouseEvent';
-import { updateEndNode, updateStartNode } from '../../reducers/grid';
+import { updateEndPress, updateNodePress, updateStartPress } from '../../reducers/mouseEvent';
+import { toggleWall, updateEndNode, updateStartNode } from '../../reducers/grid';
 
 const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMouseUp }) => {
   const nodeClasses = `node ${nodeType}`;
@@ -17,10 +17,14 @@ const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMou
   );
 };
 
+//  Move event listeners up
+//  Add reset buttons
+
 const mapStateToProps = state => {
   return {
     isStartPressed: state.mouseEvent.isStartPressed,
-    isEndPressed: state.mouseEvent.isEndPressed
+    isEndPressed: state.mouseEvent.isEndPressed,
+    isNodePressed: state.mouseEvent.isNodePressed
   }
 }
 
@@ -32,33 +36,42 @@ const mapDispatchToProps = dispatch => {
         dispatch(updateStartPress(true))
       } else if (target.className.includes('node-end')) {
         dispatch(updateEndPress(true))
-      } else if (target.className === 'node '){
-        console.log('clicked empty node')
+      } else if (target.className === 'node ' || target.className.includes('node-wall') ){
+        const [ row, col ] = target.id.split('-').map(str => parseInt(str));
+        console.log(row, col)
+        dispatch(updateNodePress(true))
+        dispatch(toggleWall([ row, col ]))
       }
     },
-    handleMouseEnter: (target, isStartPressed, isEndPressed) => {
+    handleMouseEnter: (target, isStartPressed, isEndPressed, isNodePressed) => {
       if (isStartPressed){
         const [ row, col ] = target.id.split('-').map(str => parseInt(str));
         dispatch(updateStartNode([row, col]))
       } else if (isEndPressed){
         const [ row, col ] = target.id.split('-').map(str => parseInt(str));
         dispatch(updateEndNode([row, col]))
+      } else if (isNodePressed){
+        const [ row, col ] = target.id.split('-').map(str => parseInt(str));
+        dispatch(toggleWall([ row, col ]))
       }
     },
     handleMouseUp: () => {
       dispatch(updateStartPress(false))
       dispatch(updateEndPress(false))
+      dispatch(updateNodePress(false))
     },
   };
 }
 
 
 const mergeProps = (state, dispatchProps, ownProps ) => {
-  const { isStart, isEnd, isVisited, isShortestPathNode } = ownProps
-  const { isStartPressed, isEndPressed } = state
+  const { isStart, isEnd, isVisited, isShortestPathNode, isWall } = ownProps
+  const { isStartPressed, isEndPressed, isNodePressed } = state
   const { handleMouseDown, handleMouseEnter, ...rest } = dispatchProps
 
-  const nodeType = isShortestPathNode
+  const nodeType = isWall
+    ? "node-wall"
+    : isShortestPathNode
     ? "node-shortest-path"
     : isStart
     ? "node-start"
@@ -71,7 +84,7 @@ const mergeProps = (state, dispatchProps, ownProps ) => {
   return Object.assign({}, ownProps, {
     nodeType,
     handleMouseDown: (target) => handleMouseDown(target),
-    handleMouseEnter: (target) => handleMouseEnter(target, isStartPressed, isEndPressed),
+    handleMouseEnter: (target) => handleMouseEnter(target, isStartPressed, isEndPressed, isNodePressed),
     ...rest
   });
 }

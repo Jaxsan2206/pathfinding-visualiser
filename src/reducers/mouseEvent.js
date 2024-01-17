@@ -5,6 +5,7 @@ export const mouseEventSlice = createSlice({
   initialState: {
     isStartPressed: false,
     isEndPressed: false,
+    isNodePressed: false,
   },
   reducers: {
     updateStartPress: (state, { payload }) => {
@@ -13,10 +14,13 @@ export const mouseEventSlice = createSlice({
     updateEndPress: (state, { payload }) => {
       state.isEndPressed = payload
     },
+    updateNodePress: (state, { payload }) => {
+      state.isNodePressed = payload
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateStartPress, updateEndPress } = mouseEventSlice.actions
+export const { updateStartPress, updateEndPress, updateNodePress } = mouseEventSlice.actions
 
 export default mouseEventSlice.reducer

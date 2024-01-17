@@ -13,6 +13,7 @@ export const dijkstra = (grid, startNode, finishNode, dispatch) => {
   while (!!unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
+    if (closestNode.isWall) continue;
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
     if (closestNode === finishNode) {
