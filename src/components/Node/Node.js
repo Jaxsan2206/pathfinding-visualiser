@@ -38,7 +38,6 @@ const mapDispatchToProps = dispatch => {
         dispatch(updateEndPress(true))
       } else if (target.className === 'node ' || target.className.includes('node-wall') ){
         const [ row, col ] = target.id.split('-').map(str => parseInt(str));
-        console.log(row, col)
         dispatch(updateNodePress(true))
         dispatch(toggleWall([ row, col ]))
       }

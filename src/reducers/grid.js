@@ -40,7 +40,14 @@ export const gridSlice = createSlice({
       state.grid[row][col] = newNode
     },
     toggleWall: (state, { payload }) => {
-      const [ row, col ] = payload;
+      let row, col
+      if (payload.length){
+        row = payload[0]
+        col = payload[1]
+      } else {
+        row = payload.row;
+        col = payload.col
+      }
       const node = state.grid[row][col]
       const newNode = { ...node, isWall: !node.isWall };
       state.grid[row][col] = newNode

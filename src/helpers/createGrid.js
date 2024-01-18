@@ -10,7 +10,12 @@ export const createGrid = (rows, cols) => {
             isVisited: false,
             previousNode: null,
             isShortestPathNode: false,
-            isWall: false
+            isWall: false,
+            totalDistance: Infinity,
+            direction: null,
+            path: null,
+            weight: 0,
+            heuristicDistance: null
           })
       }
       grid.push(currentRow)
