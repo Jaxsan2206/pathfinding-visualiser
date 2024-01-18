@@ -1,12 +1,14 @@
+import { updateRunning } from "../reducers/app";
 import { updateVisited, updateShortestPath} from "../reducers/grid";
 
 export const bfsDfs = (
   grid,
   startNode,
   finishNode,
-  dispatch
+  dispatch,
+  speed,
+  name
 ) => {
-  let name = "bfs";
 
   const visitedNodesInOrder = [];
 
@@ -25,7 +27,7 @@ export const bfsDfs = (
     if (name === "dfs") exploredNodes[key] = true;
     currentNode.isVisited = true;
     if (currentNode === finishNode) {
-      handleDispatch(visitedNodesInOrder, finishNode, dispatch);
+      handleDispatch(visitedNodesInOrder, finishNode, dispatch, speed);
       return visitedNodesInOrder;
     }
     let currentNeighbors = getNeighbors(currentNode, grid, name);
@@ -99,23 +101,30 @@ export function getNodesInShortestPathOrder(finishNode) {
   return nodesInShortestPathOrder;
 }
 
-const handleDispatch = (visitedNodesInOrder, finishNode, dispatch) => {
+const handleDispatch = (visitedNodesInOrder, finishNode, dispatch, speed) => {
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
   for (let i = 0; i < visitedNodesInOrder.length; i++) {
     if (i === visitedNodesInOrder.length - 1) {
       setTimeout(() => {
         animateShortestPath(nodesInShortestPathOrder);
-      }, 10 * i);
+      }, speed * i);
     }
     setTimeout(() => {
       dispatch(updateVisited(visitedNodesInOrder[i]));
-    }, 10 * i);
+    }, speed * i);
   }
   const animateShortestPath = (nodesInShortestPathOrder) => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         dispatch(updateShortestPath(nodesInShortestPathOrder[i]));
       }, 10 * i);
+
+      if (i === nodesInShortestPathOrder.length - 1) {
+        setTimeout(() => {
+          dispatch(updateRunning(false));
+        }, 10 * i);
+      }
+
     }
   };
 };

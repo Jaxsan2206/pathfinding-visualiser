@@ -1,6 +1,7 @@
+import { updateRunning } from "../reducers/app";
 import { updateShortestPath, updateVisited } from "../reducers/grid";
 
-export function astar(grid, startNode, finishNode, dispatch) {
+export function astar(grid, startNode, finishNode, dispatch, speed) {
   if (!startNode || !finishNode || startNode === finishNode) {
     return false;
   }
@@ -21,7 +22,7 @@ export function astar(grid, startNode, finishNode, dispatch) {
     visitedNodesInOrder.push(currentNode);
     currentNode.isVisited = true;
     if (currentNode === finishNode) {
-      handleDispatch(visitedNodesInOrder, finishNode, dispatch)
+      handleDispatch(visitedNodesInOrder, finishNode, dispatch, speed)
     }
     updateNeighbors(currentNode, grid, finishNode);
   }
@@ -205,24 +206,30 @@ export function getNodesInShortestPathOrder(finishNode) {
   return nodesInShortestPathOrder;
 }
 
-const handleDispatch = (visitedNodesInOrder, finishNode, dispatch) => {
+const handleDispatch = (visitedNodesInOrder, finishNode, dispatch, speed) => {
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
 
   for (let i = 0; i < visitedNodesInOrder.length; i++) {
     if (i === visitedNodesInOrder.length - 1) {
       setTimeout(() => {
         animateShortestPath(nodesInShortestPathOrder);
-      }, 100 * i);
+      }, speed * i);
     }
     setTimeout(() => {
       dispatch(updateVisited(visitedNodesInOrder[i]));
-    }, 100 * i);
+    }, speed * i);
   }
   const animateShortestPath = (nodesInShortestPathOrder) => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         dispatch(updateShortestPath(nodesInShortestPathOrder[i]));
-      }, 100 * i);
+      }, 10 * i);
+
+      if (i === nodesInShortestPathOrder.length - 1) {
+        setTimeout(() => {
+          dispatch(updateRunning(false));
+        }, 10 * i);
+      }
     }
   };
 };

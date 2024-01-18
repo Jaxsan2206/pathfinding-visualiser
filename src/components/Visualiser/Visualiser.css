@@ -1,4 +1,51 @@
-.grid-row {
-    display: flex;
-    flex-wrap: nowrap;
+p {
+  margin-bottom: 8px !important;
+  text-align: center;
 }
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 48px;
+  background-color: #30363a;
+  color: white;
+}
+
+.slidecontainer {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 8px
+}
+.button_container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+.grid-row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    /* overflow: scroll; */
+}
+
+
+@media(max-width: 992px) {
+    nav {
+      flex-direction: column;
+      gap: 24px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+  }

@@ -52,6 +52,28 @@ export const gridSlice = createSlice({
       const newNode = { ...node, isWall: !node.isWall };
       state.grid[row][col] = newNode
     },
+    clearWalls: (state) => {
+      for( let row = 0; row < state.grid.length; row++){
+        for( let col = 0; col < state.grid[row].length; col++){
+          if (state.grid[row][col].isWall){
+            const node = state.grid[row][col];
+            const newNode = { ...node, isWall: false };
+            state.grid[row][col] = newNode
+          }
+        }
+      }
+    },
+    clearAnimation: (state) => {
+      for( let row = 0; row < state.grid.length; row++){
+        for( let col = 0; col < state.grid[row].length; col++){
+          if (state.grid[row][col].isVisited){
+            const node = state.grid[row][col];
+            const newNode = { ...node, isVisited: false, isShortestPathNode: false };
+            state.grid[row][col] = newNode
+          }
+        }
+      }
+    },
   },
 })
 
@@ -63,6 +85,8 @@ export const {
   updateVisited,
   updateShortestPath,
   toggleWall,
+  clearWalls,
+  clearAnimation
 } = gridSlice.actions;
 
 export default gridSlice.reducer

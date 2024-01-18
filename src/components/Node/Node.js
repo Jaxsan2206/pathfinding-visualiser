@@ -17,14 +17,12 @@ const Node = ({ row, col, nodeType, handleMouseDown, handleMouseEnter, handleMou
   );
 };
 
-//  Move event listeners up
-//  Add reset buttons
-
 const mapStateToProps = state => {
   return {
     isStartPressed: state.mouseEvent.isStartPressed,
     isEndPressed: state.mouseEvent.isEndPressed,
-    isNodePressed: state.mouseEvent.isNodePressed
+    isNodePressed: state.mouseEvent.isNodePressed,
+    isRunning: state.app.isRunning
   }
 }
 
@@ -44,14 +42,20 @@ const mapDispatchToProps = dispatch => {
     },
     handleMouseEnter: (target, isStartPressed, isEndPressed, isNodePressed) => {
       if (isStartPressed){
-        const [ row, col ] = target.id.split('-').map(str => parseInt(str));
-        dispatch(updateStartNode([row, col]))
+        if (!target.className.includes('node-wall')){
+          const [ row, col ] = target.id.split('-').map(str => parseInt(str));
+          dispatch(updateStartNode([row, col]))
+        }
       } else if (isEndPressed){
-        const [ row, col ] = target.id.split('-').map(str => parseInt(str));
-        dispatch(updateEndNode([row, col]))
+        if (!target.className.includes('node-wall')){
+          const [ row, col ] = target.id.split('-').map(str => parseInt(str));
+          dispatch(updateEndNode([row, col]))
+        }
       } else if (isNodePressed){
-        const [ row, col ] = target.id.split('-').map(str => parseInt(str));
-        dispatch(toggleWall([ row, col ]))
+        if (!target.className.includes('node-start') && !target.className.includes('node-end')){
+          const [ row, col ] = target.id.split('-').map(str => parseInt(str));
+          dispatch(toggleWall([ row, col ]))
+        }
       }
     },
     handleMouseUp: () => {
@@ -65,7 +69,7 @@ const mapDispatchToProps = dispatch => {
 
 const mergeProps = (state, dispatchProps, ownProps ) => {
   const { isStart, isEnd, isVisited, isShortestPathNode, isWall } = ownProps
-  const { isStartPressed, isEndPressed, isNodePressed } = state
+  const { isStartPressed, isEndPressed, isNodePressed, isRunning } = state
   const { handleMouseDown, handleMouseEnter, ...rest } = dispatchProps
 
   const nodeType = isWall
@@ -82,8 +86,14 @@ const mergeProps = (state, dispatchProps, ownProps ) => {
 
   return Object.assign({}, ownProps, {
     nodeType,
-    handleMouseDown: (target) => handleMouseDown(target),
-    handleMouseEnter: (target) => handleMouseEnter(target, isStartPressed, isEndPressed, isNodePressed),
+    handleMouseDown: (target) => {
+      if (isRunning) return
+      handleMouseDown(target)
+    },
+    handleMouseEnter: (target) => {
+      if (isRunning) return
+      handleMouseEnter(target, isStartPressed, isEndPressed, isNodePressed)
+    },
     ...rest
   });
 }
