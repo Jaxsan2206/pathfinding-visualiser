@@ -27,6 +27,8 @@ nav {
 .grid-row {
   display: flex;
   flex-wrap: nowrap;
+  width: 100%;
+  justify-content: center;
 }
 
 
@@ -37,7 +39,6 @@ nav {
     align-items: center;
     margin-top: 24px;
     margin-bottom: 24px;
-    /* overflow: scroll; */
 }
 
 

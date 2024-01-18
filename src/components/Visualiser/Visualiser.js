@@ -130,6 +130,7 @@ const mapDispatchToProps = dispatch => {
       selectedAlgorithm(gridSnapshot, startNodeSnapshot, endNodeSnapshot, dispatch, speed, algorithm);
     },
     generateGrid: () => {
+      //  Need to adjust the number of columns
       const grid = createGrid(15, 50)
       dispatch(generateGrid(grid))
     },
@@ -140,6 +141,7 @@ const mapDispatchToProps = dispatch => {
       const startNodeSnapshot =gridSnapshot[startNode.row][startNode.col];
       const endNodeSnapshot = gridSnapshot[endNode.row][endNode.col];
       const wallsToAnimate = []
+      //  The above comment will change too 
       recursiveDivisionMaze(gridSnapshot, 2, 12, 2, 47,'vertical', false, startNodeSnapshot, endNodeSnapshot, wallsToAnimate)
       for (let i = 0; i < wallsToAnimate.length; i++){
         setTimeout(() => {
